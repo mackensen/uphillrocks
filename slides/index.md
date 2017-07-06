@@ -1,10 +1,655 @@
+## Don't push rocks uphill
+Deploying WordPress with Capistrano and Composer
 
-# Reveal.js and Yeoman is Awesomeness
+Charles Fulton (@mackensen)
 
-From the terminal, pop in:
 
-  ```yo reveal:slide "Slide Title"```
 
-Available options:
+## Who am I, what am I doing here?
 
- ```--markdown --attributes --notes```
+
+## Me
+
+* Senior Web Applications Developer at Lafayette College
+* Moodle developer since 2008
+* WordPress administrator from 2013
+* Frequent train rider
+
+
+## Lafayette College
+
+- Small liberal arts college in Easton, Pennsylvania
+- Enrollment of ~ 2,400
+- Engineering program
+- Strong commitment to open source
+
+
+## Organization
+
+- Web Development is part of IT
+- IT owns the platform
+- Communications owns the content
+
+
+## IT owns all the things
+
+WordPress /
+Drupal /
+Moodle /
+Pydio /
+MariaDB /
+WeBWorK /
+Redmine /
+GitLab /
+MediaWiki
+
+
+
+## WordPress at Lafayette
+
+
+## 2009
+
+- One WordPress MU installation for faculty, staff, and student blogging
+
+
+## 2010
+
+- Launched our redesigned public-facing site on WordPress 3.0 (now with multisite!)
+
+
+## 2017
+
+- Twelve multisite installations with over 3,000 individual sites
+- 100+ themes and plugins
+
+Note: obviously no one site has even half of these, but they all have to be managed.
+
+
+## Today's focus
+
+- Managing the deployed state of each installation
+
+
+## Three's not a crowd
+
+- Managing themes and plugins with Composer
+- Deploying installations with Capistrano
+
+Note: We use Composer for the themes and plugins, Capistrano for the deployment; deployment is in a couple minutes, to any environment. Rollback is an option. This might be considered off-label use. How did we get there, and why?
+
+
+## Considerations
+
+- No upgrade button <!-- .element: class="fragment" -->
+- No installing plugins from the interface <!-- .element: class="fragment" -->
+- Developers have shell access to remotes <!-- .element: class="fragment" -->
+- Development is local <!-- .element: class="fragment" -->
+- Separate development, staging, and production environments <!-- .element: class="fragment" -->
+- Generalized solution <!-- .element: class="fragment" -->
+
+Note: our servers are hardened with SELinux; Apache cannot write to the webroot. We are, however, able to do our own deployments. Code development is generally on local machines, using Vagrant or Docker. We have replicas of our installations in three separate environments, which are in different network segments. Finally, as I said, previously, we're generalists. We'd like a deployment strategy that we can adapt to Moodle, Drupal, and custom projects.
+
+
+## ...git is not joining us today
+
+- [Annette Liskey: Git in the Van](https://www.slideshare.net/AnnetteLiskey/git-in-the-van-highedweb-2013)
+- [Git Tutorial on Youtube](https://www.youtube.com/playlist?list=PLwrxhoDq6Kivqmc3jbqZhQnTuuv8odAdy)
+- [Tracy Rotton: The Modern WordPress Developer's Toolbox](https://videopress.com/v/rPkUrRWK)
+- [An introduction to version control - Beanstalk Guides](http://guides.beanstalkapp.com/version-control/intro-to-version-control.html)
+- [Raisa Yang: From Newbie to Front End Developer](http://raiscake.me/talks/newbie-to-frontend)
+- [A Visual Git Reference](http://marklodato.github.io/visual-git-guide/index-en.html)
+
+Note: This isn't a git talk or even a development talk. Here are a bunch that are.
+
+
+
+## An installation is a software project
+
+
+## Projects have dependencies
+
+- Core WordPress <!-- .element: class="fragment" -->
+- Plugins <!-- .element: class="fragment" -->
+- Themes <!-- .element: class="fragment" -->
+- Random bits of junk <!-- .element: class="fragment" -->
+
+
+## Possible sources of code
+
+- WordPress.org
+- Public version control systems
+- Private version control systems
+- Random sites on the internet
+
+Note: That's a diverse ecosystem.
+
+
+## &nbsp;
+<!-- .slide: data-background-image="resources/electronic-waste.jpg" -->
+
+
+## &nbsp;
+<!-- .slide: data-background-image="resources/rail-yard.jpg" -->
+
+Note:
+This image represents an ideal state; all the packages are organized. How do we get all these different packages flowing?
+
+
+## Manage the project
+
+- Track versions of the components
+- Don't just download and commit everything
+
+Note: Just committing everything encourages bad habits, like core and plugin hacking. Changes and change management should be purposeful.
+
+
+
+## Pushing rocks uphill
+
+
+## Submodules
+<!-- .slide: data-background-image="resources/turtles-all-the-way-down.jpg" -->
+
+It's repositories all the way down.
+
+
+## A repository for every module
+
+```bash
+[submodule "wp-content/plugins/wordpress-mobile-pack"]
+	path = wp-content/plugins/wordpress-mobile-pack
+	url = git@git.lafayette.edu:wordpress/wordpress-mobile-pack
+[submodule "wp-content/plugins/multisite-plugin-manager"]
+	path = wp-content/plugins/multisite-plugin-manager
+	url = git@git.lafayette.edu:wordpress/multisite-plugin-manager
+[submodule "wp-content/plugins/akismet"]
+	path = wp-content/plugins/akismet
+	url = git@git.lafayette.edu:wordpress/akismet
+[submodule "wp-content/plugins/wpmuldap"]
+	path = wp-content/plugins/wpmuldap
+	url = git@git.lafayette.edu:wordpress/wpmuldap
+```
+
+Note: Git stores which hash is checked out for each module.
+
+
+## Getting things into Git
+
+- Private projects: already in Git
+- Premium projects from the internet: Manual download
+- WordPress.org projects: yeah, about that...
+
+
+## WordPress.org
+
+- Download as a ZIP
+- Clone the Subversion repository
+- ~~Git~~
+
+
+## Git all the things!
+
+We built a WordPress.org Subversion-to-private git repository pipeline.
+
+
+## &nbsp;
+[Narrator]
+They shouldn't have done that.
+
+Note:
+It seemed like a good idea at the time.
+
+
+## Rocks
+
+![WordPress.org code pipeline](resources/pushing-rocks.jpg)
+
+17th century print: _WordPress.org theme vel plugin ex git submodule_
+
+Note:
+We did this for a couple years. //TODO describe process
+
+
+## Goals / lessons learned
+
+- Don't do that
+- Find a solution that works with the existing situation
+
+
+
+## Overlaying dependency management
+
+
+## Leave the rocks in the field
+<!-- .slide: data-background-image="resources/field-of-rocks.jpg" -->
+
+
+## Let's try a light touch
+
+- Bring the dependency management to the code
+- Don't make work for yourself
+
+
+## A manifest, not a statement
+
+```json
+{
+    "name": "lafayette/a-wordpress-site",
+    "description": "Our awesome WordPress installation",
+    "require": {
+        "wordpress/akismet": "~3.3",
+        "wordpress/wordpress": "4.7.*",
+    }
+}
+```
+
+How do we get there?
+
+
+## Composer
+
+- PHP package manager, like npm or bundler
+- Use a JSON file to capture metadata
+- https://getcomposer.org/
+
+
+## &nbsp;
+
+```json
+{
+    "name": "outlandish/wpackagist",
+    "description": "Install and manage WordPress plugins with Composer",
+    "require": {
+        "php": ">=5.3.2",
+        "composer/composer": "1.3.*",
+        "silex/silex": "~1.1",
+        "twig/twig": ">=1.8,<2.0-dev",
+        "symfony/console": "*",
+        "symfony/filesystem":"*",
+        "symfony/twig-bridge": "~2.3",
+        "symfony/form": "~2.3",
+        "symfony/security-csrf": "~2.3",
+        "symfony/locale": "~2.3",
+        "symfony/config": "~2.3",
+        "symfony/translation": "~2.3",
+        "pagerfanta/pagerfanta": "dev-master",
+        "franmomu/silex-pagerfanta-provider": "dev-master",
+        "doctrine/dbal": "2.5.*",
+        "knplabs/console-service-provider": "1.0",
+        "rarst/wporg-client": "dev-master",
+        "guzzlehttp/guzzle-services": "1.0.*"
+    },
+    "bin-dir": "bin",
+    "autoload": {
+        "psr-4": {
+            "Outlandish\\Wpackagist\\": "src/"
+        }
+    }
+}
+```
+
+Note: Each key/value pair is a separate project, with a defined version constraint. In this example these are all projects on Packagist, the central Composer repository.
+
+
+## Packagist
+
+- Centralized Composer repository
+- Available by default to all composer projects
+- [https://packagist.org/](https://packagist.org/)
+
+Note: With Packagist you register a project and tell it where it can find the code. It matches up the key/value pair in any composer.json file it finds with the tags in the version control system (usually git).
+
+
+## You get a repository, and you...
+
+```json
+{
+  "name": "yourcompany/yourproject",
+  "description": "Your sample project",
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/yourcompany/someotherproject"
+    }
+  ]
+}
+```
+
+Note: You probably don't want to register your private themes and plugins on Packagist. Happily, Composer lets you define any version control system as a repository, so long as there's a `composer.json` file present.
+
+
+## A fistful of repositories
+
+```json
+{
+	"name": "yourcompany/yourproject",
+	"description": "Your sample project",
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "git@git.lafayette.edu:wordpress/marquis-about-us"
+		},
+		{
+			"type": "vcs",
+			"url": "git@git.lafayette.edu:wordpress/marquis-academics"
+		},
+		{
+			"type": "vcs",
+			"url": "git@git.lafayette.edu:wordpress/marquis-admissions"
+		},
+		{
+			"type": "vcs",
+			"url": "git@git.lafayette.edu:wordpress/marquis-base"
+		},
+		{
+			"type": "vcs",
+			"url": "git@git.lafayette.edu:wordpress/marquis-brandywine"
+		},
+		{
+			"type": "vcs",
+			"url": "git@git.lafayette.edu:wordpress/marquis-campus-life"
+		},
+		{
+			"type": "vcs",
+			"url": "git@git.lafayette.edu:wordpress/marquis-hermione"
+		},
+		{
+			"type": "vcs",
+			"url": "git@git.lafayette.edu:wordpress/marquis-home"
+		},
+		{
+			"type": "vcs",
+			"url": "git@git.lafayette.edu:wordpress/marquis-map"
+		},
+		{
+			"type": "vcs",
+			"url": "git@git.lafayette.edu:wordpress/marquis-media-vault"
+		},
+		{
+			"type": "vcs",
+			"url": "git@git.lafayette.edu:wordpress/marquis-news"
+		},
+		{
+			"type": "vcs",
+			"url": "git@git.lafayette.edu:wordpress/marquis-victoire"
+		},
+	]
+}
+```
+
+Looks like bureaucracy.
+
+Note: You might have a dozen or more private plugins, with some used on multiple installations. Maybe the location changes?
+
+
+## Satis
+- Open-source flatfile Composer repository
+- Directs traffic to your repositories
+- [https://github.com/composer/satis](https://github.com/composer/satis)
+
+
+## This goes in Satis
+
+```json
+{
+  "name": "Your school's satis repository",
+  "homepage": "https://satis.yourschool.edu",
+  "repositories": [
+		{
+			"type": "vcs",
+			"url": "git@git.lafayette.edu:wordpress/marquis-about-us"
+		},
+		{
+			"type": "vcs",
+			"url": "git@git.lafayette.edu:wordpress/marquis-academics"
+		},
+		{
+			"type": "vcs",
+			"url": "git@git.lafayette.edu:wordpress/marquis-admissions"
+		},
+		{
+			"type": "vcs",
+			"url": "git@git.lafayette.edu:wordpress/marquis-base"
+		},
+		{
+			"type": "vcs",
+			"url": "git@git.lafayette.edu:wordpress/marquis-brandywine"
+		},
+    ]
+}
+```
+
+
+## ...that goes in your project
+
+```json
+{
+  "name": "yourcompany/yourproject",
+  "description": "Your sample project",
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://satis.yourschool.edu"
+    }
+  ]
+}
+```
+
+
+## Meanwhile, WordPress.org
+
+- Themes and plugins on WordPress.org do not have `composer.json` files
+- No, adding `composer.json` files to the svn-to-git sync is not a solution
+- Really, it's not
+
+
+## Wpackagist
+- Composer mirror of the WordPress.org repositories
+- Maintained by [Outlandish](https://outlandish.com/)
+- [https://wpackagist.org/](https://wpackagist.org/)
+
+
+## Wpackagist links to ZIP downloads
+
+```json
+"wpackagist-plugin/akismet": "3.3.*",
+```
+
+==
+
+```json
+"url":"https://downloads.wordpress.org/plugin/akismet.3.3.2.zip",
+```
+
+
+## Your site on Composer
+```json
+{
+  "type": "project",
+  "repositories": [
+
+    {
+      "type": "composer",
+      "url": "https://wpackagist.org"
+    },
+    {
+      "type": "composer",
+      "url": "https://packagist.lafayette.edu"
+    }
+  ],
+  "require": {
+    "lafayette/lafayette-utilities": "^1.5",
+    "lafayette/wordpress-maintenance": "2.0.0",
+    "lafayette/wpmuldap": "4.0.2.*",
+    "wpackagist-plugin/akismet": "3.3.*",
+    "wpackagist-plugin/multisite-plugin-manager": "3.1.*",
+    "wpackagist-plugin/rewrite-rules-inspector": "1.2.1",
+    "wpackagist-plugin/site-creation-utilities": "1.0.*",
+    "wpackagist-plugin/ssl-insecure-content-fixer": "2.2.*",
+    "wpackagist-plugin/wordpress-importer": "0.6.*",
+    "wpackagist-plugin/wp-cassify": "^2.0",
+    "lafayette/marquis-base": "^2.3",
+    "lafayette/library-post-types": "0.2.*",
+    "wordpress/advanced-custom-fields-pro": "^5.5",
+    "lafayette/marquis-hermione": "^1.1",
+    "wordpress/gravityforms": "2.1.3.5",
+    "lafayette/ezproxy-converter": "^1.0",
+  },
+}
+```
+
+
+## Wait, what about WordPress core?
+
+- Is that important?
+
+
+## Submodules not harmful this one time
+
+```bash
+[submodule "public"]
+	path = public
+	url = https://github.com/WordPress/WordPress
+```
+
+Note: Composer doesn't work well with core WordPress if you're keeping the traditional directory structure.
+
+
+## The project so far
+```bash
+composer.json
+composer.lock
+public
+```
+
+
+
+## Deployment
+
+
+## Time to roll rocks downhill!
+<!-- .slide: data-background-image="resources/falling-rocks.jpg" -->
+
+
+## Capistrano
+
+- Ruby-based application which manages deployed state
+- Tells a story about your deployment
+- [http://capistranorb.com/](http://capistranorb.com/)
+
+
+## Your project on Capistrano
+
+```bash
+Capfile
+composer.json
+composer.lock
+config/
+	deploy.rb
+	deploy/
+		staging.rb
+		production.rb
+Gemfile
+Gemfile.lock
+public
+```
+
+
+## It's all local trouble
+
+- Install gems on the local client
+- Execute commands on remote over SSH
+
+
+## There's a plugin for that
+
+- [Git submodule capistrano module](https://github.com/ekho/capistrano-git-with-submodules)
+- [Composer capistrano module](https://github.com/capistrano/composer)
+
+
+## Symlinks all the way down
+
+```bash
+current -> /var/www/sites/releases/20170424135711
+releases/
+	20170301101452
+	20170303204702
+	20170424135711
+		public/
+			.htaccess -> /var/www/sites/shared/public/.htaccess
+			wp-config.php -> /var/www/sites/shared/public/wp-config.php
+			wp-content/
+				uploads -> /var/www/sites/shared/public/wp-content/uploads
+repo/
+revisions.log
+shared/
+	public/
+		.htaccess
+		wp-config.php
+			wp-content/
+				uploads/
+```
+
+
+## One node, two node
+
+```ruby
+server 'node0.foo.edu', user: fetch(:user), roles: %w{app web}
+server 'node1.foo.edu', user: fetch(:user), roles: %w{web}
+```
+
+
+## Deployment as documentation
+
+- WordPress in the submodule
+- Themes and plugins in `composer.json` file
+- Nodes in the environment files
+- Tasks in the config files
+
+
+## Example: upgrade WordPress
+
+```ruby
+namespace :deploy do
+	# Run an upgrade
+    task :upgrade do
+        on roles(:app) do |host|
+            execute "cd #{fetch(:deploy_to)}/current/public && wp core update-db --network"
+        end
+    end
+end
+```
+
+
+## Example: minify theme files
+```ruby
+namespace :deploy do
+    # Minify base theme
+    before :updated, :grunt do
+        on roles(:web) do |host|
+            execute "cd #{fetch(:release_path)}/public/wp-content/themes/marquis-base && grunt deploy --gruntfile Gruntfile-deploy.js"
+        end
+    end
+```
+
+
+
+## Wrap-up
+
+
+## Review
+
+- Don't push rocks uphill
+- Manage versions, not code
+
+
+## Resources
+
+// TODO: Links to blog posts
+
+
+## Thank you
+
+- Please leave feedback at https://2017.wpcampus.org/session-survey/415
+- Find me on Twitter at @mackensen

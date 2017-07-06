@@ -1,1 +1,8 @@
-["index.md"]
+[{
+        "filename": "index.md",
+        "attr": {
+            "data-separator": "^\n\n\n",
+            "data-separator-vertical" : "^\n\n",
+            "data-separator-notes" : "^Note:"
+        }
+}]
