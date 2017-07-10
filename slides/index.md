@@ -2,6 +2,7 @@
 Deploying WordPress with Capistrano and Composer
 
 Charles Fulton (@mackensen)
+[https://mackensen.github.io/uphillrocks](https://mackensen.github.io/uphillrocks)
 
 
 
@@ -93,12 +94,7 @@ Note: our servers are hardened with SELinux; Apache cannot write to the webroot.
 
 ## ...git is not joining us today
 
-- [Annette Liskey: Git in the Van](https://www.slideshare.net/AnnetteLiskey/git-in-the-van-highedweb-2013)
-- [Git Tutorial on Youtube](https://www.youtube.com/playlist?list=PLwrxhoDq6Kivqmc3jbqZhQnTuuv8odAdy)
-- [Tracy Rotton: The Modern WordPress Developer's Toolbox](https://videopress.com/v/rPkUrRWK)
-- [An introduction to version control - Beanstalk Guides](http://guides.beanstalkapp.com/version-control/intro-to-version-control.html)
-- [Raisa Yang: From Newbie to Front End Developer](http://raiscake.me/talks/newbie-to-frontend)
-- [A Visual Git Reference](http://marklodato.github.io/visual-git-guide/index-en.html)
+- There's a slide at the end with awesome Git resources
 
 Note: This isn't a git talk or even a development talk. Here are a bunch that are.
 
@@ -640,16 +636,29 @@ namespace :deploy do
 
 ## Review
 
+- Manage versions and state, not code
 - Don't push rocks uphill
-- Manage versions, not code
 
 
-## Resources
+## Extended edition of this talk
 
-// TODO: Links to blog posts
+- [Don't push rocks uphill](http://sites.lafayette.edu/fultonc/2017/07/07/dont-push-rocks-uphill/) (Submodules)
+- [Overlaying dependency management](http://sites.lafayette.edu/fultonc/2017/07/07/overlaying-dependency-management/)
+- [Rolling rocks downhill](http://sites.lafayette.edu/fultonc/2017/07/10/rolling-rocks-downhill/)
+
+
+## Git/developer resources
+
+- [Annette Liskey: Git in the Van](https://www.slideshare.net/AnnetteLiskey/git-in-the-van-highedweb-2013)
+- [Git Tutorial on Youtube](https://www.youtube.com/playlist?list=PLwrxhoDq6Kivqmc3jbqZhQnTuuv8odAdy)
+- [Tracy Rotton: The Modern WordPress Developer's Toolbox](https://videopress.com/v/rPkUrRWK)
+- [An introduction to version control - Beanstalk Guides](http://guides.beanstalkapp.com/version-control/intro-to-version-control.html)
+- [Raisa Yang: From Newbie to Front End Developer](http://raiscake.me/talks/newbie-to-frontend)
+- [A Visual Git Reference](http://marklodato.github.io/visual-git-guide/index-en.html)
 
 
 ## Thank you
 
-- Please leave feedback at https://2017.wpcampus.org/session-survey/415
+- Please leave feedback at [https://2017.wpcampus.org/session-survey/415](https://2017.wpcampus.org/session-survey/415)
 - Find me on Twitter at @mackensen
+- This presentation: [https://mackensen.github.io/uphillrocks](https://mackensen.github.io/uphillrocks)
