@@ -297,6 +297,12 @@ Note: Each key/value pair is a separate project, with a defined version constrai
 Note: With Packagist you register a project and tell it where it can find the code. It matches up the key/value pair in any composer.json file it finds with the tags in the version control system (usually git).
 
 
+## Problem
+
+- Your stuff isn't in Packagist
+- You (probably) don't want your private projects there
+
+
 ## You get a repository, and you...
 
 ```json
