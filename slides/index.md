@@ -28,11 +28,11 @@ Charles Fulton (@mackensen)
 ## Organization
 
 - Web Development is part of IT
-- IT owns the platform
+- Web Development owns the platform
 - Communications owns the content
 
 
-## IT owns all the things
+## Web Development owns all the things
 
 WordPress /
 Drupal /
@@ -80,10 +80,10 @@ Note: obviously no one site has even half of these, but they all have to be mana
 Note: We use Composer for the themes and plugins, Capistrano for the deployment; deployment is in a couple minutes, to any environment. Rollback is an option. This might be considered off-label use. How did we get there, and why?
 
 
-## Considerations
+## Our considerations
 
 - No upgrade button <!-- .element: class="fragment" -->
-- No installing plugins from the interface <!-- .element: class="fragment" -->
+- No installing themes and plugins from the interface <!-- .element: class="fragment" -->
 - Developers have shell access to remotes <!-- .element: class="fragment" -->
 - Development is local <!-- .element: class="fragment" -->
 - Separate development, staging, and production environments <!-- .element: class="fragment" -->
@@ -96,18 +96,31 @@ Note: our servers are hardened with SELinux; Apache cannot write to the webroot.
 
 - There's a slide at the end with awesome Git resources
 
-Note: This isn't a git talk or even a development talk. Here are a bunch that are.
+Note: This isn't a git talk or even a development talk.
 
 
 
-## An installation is a software project
+## In the beginning...
+
+- We had no version control
+- We moved ZIP files around manually
+- Our themes and plugins were at inconsistent versions
+- Our confidence level: shaky
+
+Note: In 2012 it took us 6-7 hours to conduct the deployment of a new WordPress release. That's not accounting for overhead.
+
+
+
+## Idea!
+
+An installation is a software project
 
 
 ## Projects have dependencies
 
 - Core WordPress <!-- .element: class="fragment" -->
-- Plugins <!-- .element: class="fragment" -->
 - Themes <!-- .element: class="fragment" -->
+- Plugins <!-- .element: class="fragment" -->
 - Random bits of junk <!-- .element: class="fragment" -->
 
 
@@ -205,6 +218,13 @@ It seemed like a good idea at the time.
 
 Note:
 We did this for a couple years. //TODO describe process
+
+
+## Assessment
+
+- Overhead for updating themes and plugins: High
+- Deployment speed: Fast
+- Our confidence leve: Moderate
 
 
 ## Goals / lessons learned
@@ -477,7 +497,7 @@ Note: You might have a dozen or more private plugins, with some used on multiple
     },
     {
       "type": "composer",
-      "url": "https://packagist.lafayette.edu"
+      "url": "https://satis.yourschool.edu"
     }
   ],
   "require": {
@@ -561,13 +581,7 @@ public
 ## It's all local trouble
 
 - Install gems on the local client
-- Execute commands on remote over SSH
-
-
-## There's a plugin for that
-
-- [Git submodule capistrano module](https://github.com/ekho/capistrano-git-with-submodules)
-- [Composer capistrano module](https://github.com/capistrano/composer)
+- Execute commands on the remote over SSH
 
 
 ## Symlinks all the way down
@@ -594,6 +608,12 @@ shared/
 ```
 
 
+## There's a plugin for that
+
+- [Git submodule capistrano module](https://github.com/ekho/capistrano-git-with-submodules)
+- [Composer capistrano module](https://github.com/capistrano/composer)
+
+
 ## One node, two node
 
 ```ruby
@@ -610,7 +630,36 @@ server 'node1.foo.edu', user: fetch(:user), roles: %w{web}
 - Tasks in the config files
 
 
-## Example: upgrade WordPress
+
+## The way we deploy now
+
+
+## Upgrading a plugin
+
+```bash
+shatterdome:sites fultonc$ composer update wpackagist-plugin/powerpress
+Loading composer repositories with package information
+Updating dependencies (including require-dev)
+  - Removing wpackagist-plugin/powerpress (7.0.3)
+  - Installing wpackagist-plugin/powerpress (7.0.4)
+    Downloading: 100%
+
+Writing lock file
+Generating autoload files
+shatterdome:sites fultonc$ git add composer.* && git commit -m "Update powerpress"
+[master 19a7cb0] Update powerpress
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+```
+
+
+## Deploying an entire site
+
+```bash
+shatterdome:sites fultonc$ bundle exec cap production deploy
+```
+
+
+## Running database upgrades
 
 ```ruby
 namespace :deploy do
@@ -623,8 +672,13 @@ namespace :deploy do
 end
 ```
 
+```bash
+shatterdome:sites fultonc$ bundle exec cap production deploy:upgrade
+```
 
-## Example: minify theme files
+
+## Minifying theme files on deployment
+
 ```ruby
 namespace :deploy do
     # Minify base theme
@@ -636,6 +690,13 @@ namespace :deploy do
 ```
 
 
+## Assessment
+
+- Overhead for updating themes and plugins: Low
+- Deployment speed: Fast (and frequent)
+- Our confidence level: High
+
+
 
 ## Wrap-up
 
@@ -644,6 +705,15 @@ namespace :deploy do
 
 - Manage versions and state, not code
 - Don't push rocks uphill
+
+
+## Comparison of methods
+
+| Method | Overhead | Deployment | Confidence |
+| --- | --- | --- | --- |
+| Zip files | High | Glacial | Shaky |
+| Submodules | High | Fast | Moderate |
+| Composer-Capistrano | Low | Fast | High |
 
 
 ## Extended edition of this talk
