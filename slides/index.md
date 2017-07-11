@@ -637,7 +637,7 @@ server 'node1.foo.edu', user: fetch(:user), roles: %w{web}
 ## Upgrading a plugin
 
 ```bash
-shatterdome:sites fultonc$ composer update wpackagist-plugin/powerpress
+$ composer update wpackagist-plugin/powerpress
 Loading composer repositories with package information
 Updating dependencies (including require-dev)
   - Removing wpackagist-plugin/powerpress (7.0.3)
@@ -646,7 +646,7 @@ Updating dependencies (including require-dev)
 
 Writing lock file
 Generating autoload files
-shatterdome:sites fultonc$ git add composer.* && git commit -m "Update powerpress"
+$ git add composer.* && git commit -m "Update powerpress"
 [master 19a7cb0] Update powerpress
  1 file changed, 5 insertions(+), 5 deletions(-)
 ```
@@ -655,7 +655,7 @@ shatterdome:sites fultonc$ git add composer.* && git commit -m "Update powerpres
 ## Deploying an entire site
 
 ```bash
-shatterdome:sites fultonc$ bundle exec cap production deploy
+$ bundle exec cap production deploy
 ```
 
 
@@ -673,7 +673,7 @@ end
 ```
 
 ```bash
-shatterdome:sites fultonc$ bundle exec cap production deploy:upgrade
+$ bundle exec cap production deploy:upgrade
 ```
 
 
