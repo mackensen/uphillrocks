@@ -4,6 +4,8 @@ Deploying WordPress with Capistrano and Composer
 Charles Fulton (@mackensen)
 [https://mackensen.github.io/uphillrocks](https://mackensen.github.io/uphillrocks)
 
+Note: This slide deck is available online if you'd like to follow along.
+
 
 
 ## Who am I, what am I doing here?
@@ -31,6 +33,8 @@ Charles Fulton (@mackensen)
 - Web Development owns the platform
 - Communications owns the content
 
+Note: Web Development works in partnership with the Digital Communications group within Communications.
+
 
 ## Web Development owns all the things
 
@@ -43,6 +47,8 @@ WeBWorK /
 Redmine /
 GitLab /
 MediaWiki
+
+Note: We have to be generalists given the broad nature of our responsibilities.
 
 
 
@@ -137,6 +143,8 @@ Note: That's a diverse ecosystem.
 ## &nbsp;
 <!-- .slide: data-background-image="resources/electronic-waste.jpg" -->
 
+Note: Artist's conception of a disorganized collection of WordPress themes and plugins from various sources. I'm not sure what core WordPress is in this metaphor.
+
 
 ## &nbsp;
 <!-- .slide: data-background-image="resources/rail-yard.jpg" -->
@@ -156,8 +164,10 @@ Note: Just committing everything encourages bad habits, like core and plugin hac
 
 ## Pushing rocks uphill
 
+Note: I'll start with a cautionary tale about how we first solved this problem, and why you shouldn't do that.
 
-## Submodules
+
+## Git  Submodules
 <!-- .slide: data-background-image="resources/turtles-all-the-way-down.jpg" -->
 
 It's repositories all the way down.
@@ -186,8 +196,10 @@ Note: Git stores which hash is checked out for each module.
 ## Getting things into Git
 
 - Private projects: already in Git
-- Premium projects from the internet: Manual download
+- Premium projects from the internet: manual download
 - WordPress.org projects: yeah, about that...
+
+Note: Gravity Forms is a good example of a popular plugin that isn't distributed via a version control system. You can't avoid the overhead in this case.
 
 
 ## WordPress.org
@@ -216,8 +228,13 @@ It seemed like a good idea at the time.
 
 17th century print: _WordPress.org theme vel plugin ex git submodule_
 
-Note:
-We did this for a couple years. //TODO describe process
+Note: We did this for two years. The pipeline involved using the svn2git ruby gem to convert each WordPress.org subversion repository, then push the results into a self-hosted git repository. The initial clone took 3-4 hours, assuming it didn't fail because the SVN repository was in a non-standard configuration. That scenario was common with older WordPress themes. Also, there was a non-zero chance you'd get blocked for scraping.
+
+
+## Deployment
+
+- Clone the project repository to the web server
+- Lots of magic encapsulated in shell scripts
 
 
 ## Assessment
