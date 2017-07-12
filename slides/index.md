@@ -88,14 +88,12 @@ Note: We use Composer for the themes and plugins, Capistrano for the deployment;
 
 ## Our considerations
 
-- No upgrade button <!-- .element: class="fragment" -->
 - No installing themes and plugins from the interface <!-- .element: class="fragment" -->
 - Developers have shell access to remotes <!-- .element: class="fragment" -->
-- Development is local <!-- .element: class="fragment" -->
 - Separate development, staging, and production environments <!-- .element: class="fragment" -->
 - Generalized solution <!-- .element: class="fragment" -->
 
-Note: our servers are hardened with SELinux; Apache cannot write to the webroot. We are, however, able to do our own deployments. Code development is generally on local machines, using Vagrant or Docker. We have replicas of our installations in three separate environments, which are in different network segments. Finally, as I said, previously, we're generalists. We'd like a deployment strategy that we can adapt to Moodle, Drupal, and custom projects.
+Note: our servers are hardened with SELinux; Apache cannot write to the webroot. We are, however, able to do our own deployments. We have replicas of our installations in three separate environments, which are in different network segments. Finally, as I said, previously, we're generalists. We'd like a deployment strategy that we can adapt to Moodle, Drupal, and custom projects.
 
 
 ## ...git is not joining us today
