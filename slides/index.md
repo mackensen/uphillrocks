@@ -175,6 +175,7 @@ This image represents an ideal state; all the packages are organized. How do we 
 
 ## Manage the project
 
+- Single repository for the project
 - Track versions of the components
 - Don't just download and commit everything
 
@@ -762,18 +763,18 @@ namespace :deploy do
 
 ## Comparison of methods
 
-| Method | Overhead | Deployment | Confidence |
-| --- | --- | --- | --- |
-| Zip files | High | Glacial | Shaky |
-| Submodules | High | Fast | Moderate |
-| Composer-Capistrano | Low | Fast | High |
+| Method              | Overhead | Deployment | Confidence |
+| ------------------- | -------- | ---------- | ---------- |
+| Zip files           | High     | Glacial    | Shaky      |
+| Submodules          | High     | Fast       | Moderate   |
+| Composer-Capistrano | Low      | Fast       | High       |
 
 
 ## Extended edition of this talk
 
-- [Don't push rocks uphill](http://sites.lafayette.edu/fultonc/2017/07/07/dont-push-rocks-uphill/) (Submodules)
-- [Overlaying dependency management](http://sites.lafayette.edu/fultonc/2017/07/07/overlaying-dependency-management/)
-- [Rolling rocks downhill](http://sites.lafayette.edu/fultonc/2017/07/10/rolling-rocks-downhill/)
+- Submodules: [Don't push rocks uphill](http://sites.lafayette.edu/fultonc/2017/07/07/dont-push-rocks-uphill/)
+- Composer: [Overlaying dependency management](http://sites.lafayette.edu/fultonc/2017/07/07/overlaying-dependency-management/)
+- Capistrano: [Rolling rocks downhill](http://sites.lafayette.edu/fultonc/2017/07/10/rolling-rocks-downhill/)
 
 
 ## Git/developer resources
