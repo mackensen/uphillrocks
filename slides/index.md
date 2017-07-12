@@ -116,6 +116,26 @@ Note: This isn't a git talk or even a development talk.
 Note: In 2012 it took us 6-7 hours to conduct the deployment of a new WordPress release. That's not accounting for overhead.
 
 
+## Our directory structure
+
+```bash
+.htaccess
+wp-admin/
+wp-config.php
+wp-content/
+	blogs.dir/
+	cache/
+	plugins/
+		foo/
+	themes/
+		bar/
+	uploads/
+wp-includes/
+```
+
+Note: This is pretty standard, but a from a version control perspective a little annoying. You have core WordPress and your themes and plugins all mixed in, and your uploads inside the main document root.
+
+
 
 ## Idea!
 
@@ -191,6 +211,22 @@ It's repositories all the way down.
 ```
 
 Note: Git stores which hash is checked out for each module.
+
+
+## Structure
+
+```bash
+.gitmodules
+wp-admin/
+wp-content/
+	plugins/
+		foo/
+	themes/
+		bar/
+wp-includes/
+```
+
+Note: The code is visible within the checked out repositories, but only the hash is committed. The upload directories and configuration files sit on the remote, untracked.
 
 
 ## Getting things into Git
