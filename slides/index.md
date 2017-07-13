@@ -635,6 +635,25 @@ public
 - Install gems on the local client
 - Execute commands on the remote over SSH
 
+Note: There's no server-side configuration, and no local-side configuration external to the project repository.
+
+
+## Calm before the storm
+
+```bash
+releases/
+repo/
+revisions.log
+shared/
+	public/
+		.htaccess
+		wp-config.php
+			wp-content/
+				uploads/
+```
+
+Note: With Capistrano you keep your configuration and uploads outside the deployment root.
+
 
 ## Symlinks all the way down
 
@@ -659,11 +678,16 @@ shared/
 				uploads/
 ```
 
+Note: On deployment, the configuration and uploads are symlinked in, and the "current" symlink points at the last good release.
 
-## There's a plugin for that
+
+## Tasks: there's a plugin for that
 
 - [Git submodule capistrano module](https://github.com/ekho/capistrano-git-with-submodules)
 - [Composer capistrano module](https://github.com/capistrano/composer)
+- [Npm capistrano module](https://github.com/capistrano/npm)
+
+Note: in config/deploy.rb you tell Capistrano what to do when it deploys. Init submodules, install Composer dependencies, do arbitrary things with node, run shell commands.
 
 
 ## One node, two node
@@ -671,7 +695,10 @@ shared/
 ```ruby
 server 'node0.foo.edu', user: fetch(:user), roles: %w{app web}
 server 'node1.foo.edu', user: fetch(:user), roles: %w{web}
+set :deploy_to, '/var/www/sites'
 ```
+
+Note: environment files tell Capistrano where to deploy things, and let you vary tasks in a multi-node environment. We fell right in to a solution for high availability just when we needed it.
 
 
 ## Deployment as documentation
@@ -681,6 +708,7 @@ server 'node1.foo.edu', user: fetch(:user), roles: %w{web}
 - Nodes in the environment files
 - Tasks in the config files
 
+Note: it would be cruel, but we could hand off a project repository to a new developer and tell them to redeploy it.
 
 
 ## The way we deploy now
@@ -741,6 +769,8 @@ namespace :deploy do
     end
 ```
 
+Note: I mentioned node. We had a problem with managing minified CSS and Javascript files for our base theme in git. We moved that to a Grunt task, to be executed on every deployment.
+
 
 ## Assessment
 
@@ -748,6 +778,7 @@ namespace :deploy do
 - Deployment speed: Fast (and frequent)
 - Our confidence level: High
 
+Note: we're deploying all the time, any time.
 
 
 ## Wrap-up
