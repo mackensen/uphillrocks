@@ -518,13 +518,13 @@ Note: You might have a dozen or more private plugins, with some used on multiple
 - Really, it's not
 
 
-## Wpackagist
+## WordPress Packagist
 - Composer mirror of the WordPress.org repositories
 - Maintained by [Outlandish](https://outlandish.com/)
 - [https://wpackagist.org/](https://wpackagist.org/)
 
 
-## Wpackagist links to ZIP downloads
+## WordPress Packagist links to ZIP downloads
 
 ```json
 "wpackagist-plugin/akismet": "3.3.*",
