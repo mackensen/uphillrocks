@@ -711,6 +711,7 @@ Note: environment files tell Capistrano where to deploy things, and let you vary
 Note: it would be cruel, but we could hand off a project repository to a new developer and tell them to redeploy it.
 
 
+
 ## The way we deploy now
 
 
@@ -779,6 +780,7 @@ Note: I mentioned node. We had a problem with managing minified CSS and Javascri
 - Our confidence level: High
 
 Note: we're deploying all the time, any time.
+
 
 
 ## Wrap-up
